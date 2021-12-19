@@ -1,0 +1,6 @@
+version: "3.8"
+services:
+  stylizer:
+    build: .
+    ports:
+      - "3001:80"

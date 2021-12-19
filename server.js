@@ -3,12 +3,14 @@ var tf = require("@tensorflow/tfjs");
 var ProtoPost = require("protopost");
 var utils = require("./utils");
 
-//TODO: env vars
-var PORT = 3001;
-var STYLE_NAME = "mobilenet-style";
-var TRANSFORMER_NAME = "seperable-transformer";
-var STYLE_RATIO = 0.8; //0..1
-var SIZE = 512;
+var PORT = parseInt(process.env["PORT"] || 80);
+var STYLE_NAME = process.env["STYLE_MODEL"] || "mobilenet-style";
+var TRANSFORMER_NAME = process.env["TRANSFORMER_MODEL"] || "seperable-transformer";
+var SIZE = parseInt(process.env["OUTPUT_SIZE"] || 512);
+
+//TODO implement these:
+var STYLE_SCALE = parseFloat(process.env["STYLE_SCALE"] || 1/2);
+var STYLE_RATIO = parseFloat(process.env["STYLE_RATIO"] || 0.8); //0..1
 
 //given an image tensor, returns a 100d style vector
 async function getStyle(styleImg)
