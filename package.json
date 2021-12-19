@@ -1,0 +1,11 @@
+{
+  "name": "aegis-image-stylizer",
+  "version": "0.0.0",
+  "author": "Zevo",
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.12.0",
+    "@tensorflow/tfjs-core": "^3.12.0",
+    "@tensorflow/tfjs-node": "^3.12.0",
+    "protopost": "github:tehzevo/protopost"
+  }
+}
