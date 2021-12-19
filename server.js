@@ -64,17 +64,26 @@ async function stylizeB64(data)
 
   content = await utils.loadImageB64(content, SIZE);
   styles = await Promise.all(styles.map((e) => utils.loadImageB64(e, STYLE_SIZE)));
+  var disposeUs = styles;
   styles = await Promise.all(styles.map((e) => getStyle(e)));
+  disposeUs.forEach((e) => e.dispose());
 
   var sourceStyle = await getStyle(content);
   var targetStyle = await combineStyles(styles);
+  styles.forEach((e) => e.dispose());
 
   var style = await combineStyles([sourceStyle, targetStyle], [1-STYLE_RATIO, STYLE_RATIO]);
+  sourceStyle.dispose();
+  targetStyle.dispose();
 
   var stylized = await stylize(content, style);
-
+  var disposeMe = stylized;
   stylized = await utils.saveImageB64(stylized);
+  disposeMe.dispose();
+  content.dispose();
+  style.dispose();
 
+  console.log(tf.memory().numTensors, tf.memory().numBytes)
   return stylized;
 }
 
