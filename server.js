@@ -8,9 +8,10 @@ var STYLE_NAME = process.env["STYLE_MODEL"] || "mobilenet-style";
 var TRANSFORMER_NAME = process.env["TRANSFORMER_MODEL"] || "seperable-transformer";
 var SIZE = parseInt(process.env["OUTPUT_SIZE"] || 512);
 
-//TODO implement these:
 var STYLE_SCALE = parseFloat(process.env["STYLE_SCALE"] || 1/2);
 var STYLE_RATIO = parseFloat(process.env["STYLE_RATIO"] || 0.8); //0..1
+
+var STYLE_SIZE = Math.floor(SIZE * STYLE_SCALE);
 
 //given an image tensor, returns a 100d style vector
 async function getStyle(styleImg)
@@ -62,13 +63,13 @@ async function stylizeB64(data)
   console.log("received content image and " + styles.length + " style images");
 
   content = await utils.loadImageB64(content, SIZE);
-  styles = await Promise.all(styles.map((e) => utils.loadImageB64(e, SIZE/2))); //TODO: remove hardcoded scale
+  styles = await Promise.all(styles.map((e) => utils.loadImageB64(e, STYLE_SIZE)));
   styles = await Promise.all(styles.map((e) => getStyle(e)));
 
   var sourceStyle = await getStyle(content);
   var targetStyle = await combineStyles(styles);
 
-  var style = await combineStyles([sourceStyle, targetStyle], [0.2, 0.8]); //TODO: remove hardcoded style
+  var style = await combineStyles([sourceStyle, targetStyle], [1-STYLE_RATIO, STYLE_RATIO]);
 
   var stylized = await stylize(content, style);
 

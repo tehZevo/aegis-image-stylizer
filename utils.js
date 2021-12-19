@@ -24,17 +24,34 @@ async function getModel(name)
   return models[name];
 }
 
-//TODO: allow keeping aspect ratio (size becomes the box that the image must fit inside)
-function scaleImage(img, size)
+function scaleImage(img, size, keepAspect=true)
 {
+  var sizeX = size;
+  var sizeY = size;
   return tf.tidy(() =>
   {
     //remove alpha channel if present
     img = tf.slice(img, [0, 0, 0], [-1, -1, 3]);
+
+    if(keepAspect)
+    {
+      //determine new size
+      //[height, width, channels]
+      var aspect = img.shape[1] / img.shape[0]; //calculate w/h aspect
+      if(aspect > 1)
+      {
+        sizeY /= aspect;
+      }
+      else
+      {
+        sizeX *= aspect;
+      }
+    }
+
     //resize
     if(size != null)
     {
-      img = tf.image.resizeBilinear(img, [size, size]);
+      img = tf.image.resizeBilinear(img, [sizeY, sizeX]);
     }
     //rescale to 0..1 range
     img = img.toFloat().div(tf.scalar(255));
