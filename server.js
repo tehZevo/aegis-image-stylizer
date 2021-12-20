@@ -11,8 +11,6 @@ var SIZE = parseInt(process.env["OUTPUT_SIZE"] || 512);
 var STYLE_SCALE = parseFloat(process.env["STYLE_SCALE"] || 1/2);
 var STYLE_RATIO = parseFloat(process.env["STYLE_RATIO"] || 0.8); //0..1
 
-var STYLE_SIZE = Math.floor(SIZE * STYLE_SCALE);
-
 //given an image tensor, returns a 100d style vector
 async function getStyle(styleImg)
 {
@@ -59,11 +57,15 @@ async function stylizeB64(data)
 {
   var content = data.content;
   var styles = data.styles;
+  var scale = data.scale || STYLE_SCALE;
+  var ratio = data.ratio || STYLE_RATIO;
+
+  var styleSize = Math.floor(SIZE * scale);
 
   console.log("received content image and " + styles.length + " style images");
 
   content = await utils.loadImageB64(content, SIZE);
-  styles = await Promise.all(styles.map((e) => utils.loadImageB64(e, STYLE_SIZE)));
+  styles = await Promise.all(styles.map((e) => utils.loadImageB64(e, styleSize)));
   var disposeUs = styles;
   styles = await Promise.all(styles.map((e) => getStyle(e)));
   disposeUs.forEach((e) => e.dispose());
@@ -72,7 +74,7 @@ async function stylizeB64(data)
   var targetStyle = await combineStyles(styles);
   styles.forEach((e) => e.dispose());
 
-  var style = await combineStyles([sourceStyle, targetStyle], [1-STYLE_RATIO, STYLE_RATIO]);
+  var style = await combineStyles([sourceStyle, targetStyle], [1-ratio, ratio]);
   sourceStyle.dispose();
   targetStyle.dispose();
 
