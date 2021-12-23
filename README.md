@@ -1,4 +1,4 @@
-#Aegis image stylization node
+# Aegis image stylization node
 
 Powered by models from [Arbitrary Image Stylization TFJS](https://github.com/reiinakano/arbitrary-image-stylization-tfjs) by reiinakano (Reiichiro Nakano).
 
