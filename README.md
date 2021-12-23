@@ -6,7 +6,7 @@ Powered by models from [Arbitrary Image Stylization TFJS](https://github.com/rei
 * `PORT` - the port to listen on
 * `STYLE_NAME` - name of the style model to use; options are `mobilenet-style` (default) or `inception-style`
 * `TRANSFORMER_NAME` - name of the transformer model to use; options are `seperable-transformer` (default) or `original-transformer`
-* `SIZE` - maximum dimension of the image to generate (defaults to 512)
+* `OUTPUT_SIZE` - maximum dimension of the image to generate (defaults to 512)
 * `STYLE_SCALE` - style scale to use if not overridden by request (defaults to 0.5)
 * `STYLE_RATIO` - strength of style to use if not overridden by request (defaults to 0.8)
 
